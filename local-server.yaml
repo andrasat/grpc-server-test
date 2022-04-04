@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: base-local-service
+  labels:
+    app: base-local-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: base-local-service
+  template:
+    metadata:
+      labels:
+        app: base-local-service
+    spec:
+      containers:
+        - name: base-local-service
+          image: localhost:53456/local-service:1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 12321
+          livenessProbe:
+            exec:
+              command: ['/bin/grpc_health_probe', '-addr=:12321']
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command: ['/bin/grpc_health_probe', '-addr=:12321']
+            initialDelaySeconds: 5
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+          # env:
+          #   - name: GRPC_TRACE
+          #     value: "all"
+          #   - name: GRPC_VERBOSITY
+          #     value: "DEBUG"

@@ -1,0 +1,12 @@
+version: '3'
+networks:
+  default:
+    external:
+      name: base-microservices
+services:
+  base-local-service:
+    image: node:16.14-alpine3.15
+    command: yarn dev
+    volumes:
+      - ./:/source
+    working_dir: /source
